@@ -1,7 +1,7 @@
 import axios from "axios";
 // import { button, div, image, title } from "motion/react-client";
 import React, { useState, useRef, useEffect, useCallback } from "react";
-// import { motion } from "motion/react";
+import { motion } from "motion/react";
 
 const API_URL = "https://api.unsplash.com/search/photos";
 const IMAGE_PER_PAGE = 20;
@@ -17,22 +17,36 @@ const ExpandableCard = ({
 }) => {
   const [isHovered, setIsHovered] = useState(false);
 
+  {
+    /* Overlay */
+  }
   return (
-    <div className="relative overflow-hidden rounded-lg shadow-lg h-64" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
-      <img src={imageSrc} alt={imageAlt} className="w-full h-full object-cover transition-transform duration-300 hover:scale-105" />
-
-      {/* Overlay */}
-      <div className={`absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-4 transition-all duration-300 ${isHovered ? "opacity-100" : "opacity-0"}`}>
-        <div className="flex items-center mb-2">
-          <img src={userImage} alt={username} className="w-8 h-8 rounded-full mr-2" />
-          <a href={userProfile} target="_blank" rel="noopener noreferrer" className="text-white font-medium hover:underline">
-            @{username}
-          </a>
+    <motion.div
+      className="relative w-full max-w-md mx-auto  overflow-hidden rounded-lg shadow-xl/30 "
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      initial={{ height: "300px" }}
+      whileHover={{ height: "450px" }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+    >
+      <div className="border-0 shadow-lg shadow-purple/50 h-full">
+        <div className="relative w-full h-[300px]">
+          <img src={imageSrc} alt={imageAlt} className="w-full h-full object-cover " />
         </div>
-        <h3 className="text-white text-lg font-bold line-clamp-1">{title}</h3>
-        <p className="text-white text-sm line-clamp-2">{description}</p>
+        <div className="p-4 bg-white">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: isHovered ? 1 : 0 }} transition={{ duration: 0.2, delay: isHovered ? 0.1 : 0 }}>
+            <div className="flex items-center mb-2">
+              <img src={userImage} alt={username} className="w-8 h-8 rounded-full mr-2 shadow-xl/30" />
+              <a href={userProfile} target="_blank" rel="noopener noreferrer" className="text-black font-medium hover:underline">
+                @{username}
+              </a>
+            </div>
+            <h3 className="text-black text-lg font-bold line-clamp-1">{title}</h3>
+            <p className="text-black text-sm line-clamp-2">{description}</p>
+          </motion.div>
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -111,26 +125,6 @@ function ImageSearch() {
               Search
             </button>
           </form>
-          {/* <div className="w-full">
-            <form onSubmit={handleSearch}>
-              <input type="search" placeholder="Cari gambar disini..." ref={searchInput} className="text-black-900 w-full border-2 border-purple-300 p-2 rounded-md" />
-            </form>
-          </div> */}
-
-          {/* <div className="flex flex-row gap-4 justify-center flex-wrap">
-            <button onClick={() => handleSelection("nature")} className="bg-purple-400 p-2 rounded-md text-white">
-              Nature
-            </button>
-            <button onClick={() => handleSelection("bird")} className="bg-purple-400 p-2 rounded-md text-white">
-              Bird
-            </button>
-            <button onClick={() => handleSelection("computer")} className="bg-purple-400 p-2 rounded-md text-white">
-              Computer
-            </button>
-            <button onClick={() => handleSelection("landscape")} className="bg-purple-400 p-2 rounded-md text-white">
-              Landscape
-            </button>
-          </div> */}
           <div className="flex flex-wrap gap-2 justify-center">
             {["Nature", "Bird", "Computer", "Landscape"].map((item) => (
               <button key={item} onClick={() => handleSelection(item.toLowerCase())} className="bg-purple-400 px-3 py-1 rounded-md text-white hover:bg-purple-500 transition-colors">
