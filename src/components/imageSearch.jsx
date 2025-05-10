@@ -17,37 +17,53 @@ const ExpandableCard = ({ imageSrc, imageAlt, onClick, ...props }) => {
 };
 
 const ImagePopup = ({ image, onClose, onNext, onPrev, hasNext, hasPrev, relatedImages }) => {
+  const popupRef = useRef(null);
   if (!image?.urls) return null;
 
   return (
     <AnimatePresence>
-      <motion.div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+      <motion.div
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4"
+        onClick={(e) => {
+          if (e.target === e.currentTarget) {
+            onClose();
+          }
+        }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+      >
         {/* Close BUtton */}
         <button onClick={onClose} className="absolute top-4 right-4 text-white text-2xl z-10 bg-black/50 rounded-full w-10 h-10 flex items-center justify-center hover:bg-black/70 transition-colors" aria-label="Close">
           &times;
         </button>
+        <div onClick={(e) => e.stopPropagation()} ref={popupRef} className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] flex overflow-hidden">
+          {/* Navigation button */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onPrev();
+            }}
+            disabled={!hasPrev}
+            className={`absolute left-4 top-1/2 -translate-y-1/2 text-white text-4xl z-10 bg-black/50 rounded-full w-12 h-12 flex items-center justify-center ${!hasPrev ? "opacity-50 cursor-not-allowed" : "hover:bg-black/70"}`}
+            aria-label="Previous Image"
+          >
+            &#10094;
+          </button>
 
-        {/* Navigation button */}
-        <button
-          onClick={onPrev}
-          disabled={!hasPrev}
-          className={`absolute left-4 top-1/2 -translate-y-1/2 text-white text-4xl z-10 bg-black/50 rounded-full w-12 h-12 flex items-center justify-center ${!hasPrev ? "opacity-50 cursor-not-allowed" : "hover:bg-black/70"}`}
-          aria-label="Previous Image"
-        >
-          &#10094;
-        </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation(); 
+              onNext();
+            }}
+            disabled={!hasNext}
+            className={`absolute right-4 top-1/2 -translate-y-1/2 text-white text-4xl z-10 bg-black/50 rounded-full w-12 h-12 flex items-center justify-center ${!hasNext ? "opacity-50 cursor-not-allowed" : "hover:bg-black/70"}`}
+            aria-label="Next Image"
+          >
+            &#10095;
+          </button>
 
-        <button
-          onClick={onNext}
-          disabled={!hasNext}
-          className={`absolute right-4 top-1/2 -translate-y-1/2 text-white text-4xl z-10 bg-black/50 rounded-full w-12 h-12 flex items-center justify-center ${!hasNext ? "opacity-50 cursor-not-allowed" : "hover:bg-black/70"}`}
-          aria-label="Next Image"
-        >
-          &#10095;
-        </button>
-
-        {/* Main Container */}
-        <div className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] flex overflow-hidden">
+          {/* Main Container */}
           {/* Main Content */}
           <div className="flex-1 flex flex-col">
             {/* Image */}
@@ -88,7 +104,7 @@ const ImagePopup = ({ image, onClose, onNext, onPrev, hasNext, hasPrev, relatedI
                   onClick={() => {
                     const newIndex = relatedImages.findIndex((i) => i.id === img.id);
                     if (newIndex !== -1) {
-                      onclose();
+                      onClose();
                     }
                   }}
                 >
