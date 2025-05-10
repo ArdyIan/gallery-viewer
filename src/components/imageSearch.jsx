@@ -16,7 +16,7 @@ const ExpandableCard = ({ imageSrc, imageAlt, onClick, ...props }) => {
   );
 };
 
-const ImagePopup = ({ image, onClose, onNext, onPrev, hasNext, hasPrev, relatedImages }) => {
+const ImagePopup = ({ image, onClose, onNext, onPrev, hasNext, hasPrev, relatedImages, allImages: images, setSelectedImage, setCurrentImageIndex }) => {
   const popupRef = useRef(null);
   if (!image?.urls) return null;
 
@@ -37,6 +37,8 @@ const ImagePopup = ({ image, onClose, onNext, onPrev, hasNext, hasPrev, relatedI
         <button onClick={onClose} className="absolute top-4 right-4 text-white text-2xl z-10 bg-black/50 rounded-full w-10 h-10 flex items-center justify-center hover:bg-black/70 transition-colors" aria-label="Close">
           &times;
         </button>
+
+        {/* Main Container */}
         <div onClick={(e) => e.stopPropagation()} ref={popupRef} className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] flex overflow-hidden">
           {/* Navigation button */}
           <button
@@ -53,7 +55,7 @@ const ImagePopup = ({ image, onClose, onNext, onPrev, hasNext, hasPrev, relatedI
 
           <button
             onClick={(e) => {
-              e.stopPropagation(); 
+              e.stopPropagation();
               onNext();
             }}
             disabled={!hasNext}
@@ -63,7 +65,6 @@ const ImagePopup = ({ image, onClose, onNext, onPrev, hasNext, hasPrev, relatedI
             &#10095;
           </button>
 
-          {/* Main Container */}
           {/* Main Content */}
           <div className="flex-1 flex flex-col">
             {/* Image */}
@@ -102,9 +103,13 @@ const ImagePopup = ({ image, onClose, onNext, onPrev, hasNext, hasPrev, relatedI
                   key={img.id}
                   className="cursor-pointer group"
                   onClick={() => {
-                    const newIndex = relatedImages.findIndex((i) => i.id === img.id);
+                    const newIndex = images.findIndex((i) => i.id === img.id);
                     if (newIndex !== -1) {
-                      onClose();
+                      setSelectedImage(images[newIndex]);
+                      setCurrentImageIndex(newIndex);
+                    } else {
+                      setSelectedImage(img);
+                      setCurrentImageIndex(-1);
                     }
                   }}
                 >
@@ -293,6 +298,9 @@ function ImageSearch() {
           hasNext={currentImageIndex < images.length - 1}
           hasPrev={currentImageIndex > 0}
           relatedImages={images.filter((img) => img.id !== selectedImage.id).slice(0, 5)}
+          allImages={images}
+          setSelectedImage={setSelectedImage}
+          setCurrentImageIndex={setCurrentImageIndex}
         />
       )}
     </main>
