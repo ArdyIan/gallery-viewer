@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import {  AnimatePresence } from "framer-motion";
 
 const API_URL = "https://api.unsplash.com/search/photos";
 const IMAGE_PER_PAGE = 20;
