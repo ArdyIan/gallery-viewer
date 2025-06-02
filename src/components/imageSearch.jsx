@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import {  AnimatePresence } from "framer-motion";
+import {motion, AnimatePresence } from "framer-motion";
 
 const API_URL = "https://api.unsplash.com/search/photos";
 const IMAGE_PER_PAGE = 20;
@@ -53,7 +53,7 @@ const ImagePopup = ({ image, onClose, onNext, onPrev, hasNext, hasPrev, relatedI
 
           <button
             onClick={(e) => {
-              e.stopPropagation(); 
+              e.stopPropagation();
               onNext();
             }}
             disabled={!hasNext}
@@ -138,6 +138,8 @@ function ImageSearch() {
   const [query, setQuery] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  // console.log("key", import.meta.env.VITE_UNSPLASH_API_KEY);
 
   const fetchImages = useCallback(async () => {
     if (!query.trim()) {
